@@ -1,0 +1,75 @@
+{
+    "toolbar.header.cloudModeTitle": {
+      "value": "Open AMT Cloud Toolkit Sample UI",
+      "description": "Main title of the application"
+    },
+    "toolbar.header.consoleModeTitle": {
+        "value": "Console",
+        "description": "Main title of the application in console mode"
+      },
+    "dashboard.totalDevices": {
+      "value": "Total Devices",
+      "description": "Total number of devices"
+    },
+    "dashboard.devicesConnected": {
+      "value": "Devices Connected",
+      "description": "Number of devices connected"
+    },
+    "dashboard.devicesDisconnected": {
+      "value": "Devices Disconnected",
+      "description": "Number of devices disconnected"
+    },
+    "dashboard.addNewDevice": {
+      "value": "1. Add a new device",
+      "description": "Step to add a new device"
+    },
+    "dashboard.manageYourDevice": {
+      "value": "2. Manage Your Device",
+      "description": "Step to manage your device"
+    },
+    "dashboard.getStarted": {
+      "value": "Get started",
+      "description": "Get started with the toolkit"
+    },
+    "dashboard.getStartedDescription": {
+      "value": "New to the toolkit? See the documentation to learn the basics first.",
+      "description": "Description for getting started"
+    },
+    "dashboard.understandSecurity": {
+      "value": "Understand Security",
+      "description": "Understand security topics"
+    },
+    "dashboard.understandSecurityDescription": {
+      "value": "Confused about security topics? Learn about passwords, Vault, certificates, and more.",
+      "description": "Description for understanding security"
+    },
+    "dashboard.deploy": {
+      "value": "Deploy",
+      "description": "Deploy the toolkit"
+    },
+    "dashboard.deployDescription": {
+      "value": "Ready to move to Production? Check out our deployment guide (Coming Soon).",
+      "description": "Description for deployment"
+    },
+    "dashboard.createWirelessConfig": {
+      "value": "1. Create Wireless Config [Optional]",
+      "description": "Step to create a wireless configuration"
+    },
+    "dashboard.createCiraConfig": {
+      "value": "2. Create a CIRA Config",
+      "description": "Step to create a CIRA configuration"
+    },
+    "dashboard.createProfile": {
+      "value": "3. Create a Profile",
+      "description": "Step to create a profile"
+    },
+    "dashboard.addProvisioningCertificate": {
+      "value": "4. Add a Provisioning Certificate [Optional]",
+      "description": "Step to add a provisioning certificate"
+    },
+    "dashboard.manageYourDeviceAgain": {
+      "value": "5. Manage Your Device",
+      "description": "Step to manage your device again"
+    }
+  }
+  

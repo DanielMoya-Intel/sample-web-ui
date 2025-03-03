@@ -1,3 +1,5 @@
+/// <reference types="@angular/localize" />
+
 /*********************************************************************
  * Copyright (c) Intel Corporation 2022
  * SPDX-License-Identifier: Apache-2.0
@@ -15,6 +17,14 @@ import { BrowserModule, bootstrapApplication } from '@angular/platform-browser'
 import { MomentModule } from 'ngx-moment'
 import { AuthorizeInterceptor } from './app/authorize.interceptor'
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http'
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { HttpClient } from '@angular/common/http'
+
+// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json')
+}
 
 if (environment.production) {
   enableProdMode()
@@ -22,7 +32,18 @@ if (environment.production) {
 
 bootstrapApplication(AppComponent, {
   providers: [
-    importProvidersFrom(MomentModule, BrowserModule, AppRoutingModule),
+    importProvidersFrom(
+      MomentModule, 
+      BrowserModule, 
+      AppRoutingModule,  
+      TranslateModule.forRoot({
+        loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+        }
+      })
+    ),
     provideHttpClient(withInterceptors([AuthorizeInterceptor])),
     provideAnimations(),
     provideRouter([

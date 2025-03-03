@@ -9,6 +9,7 @@ import { AuthService } from './auth.service'
 import { ToolbarComponent } from './core/toolbar/toolbar.component'
 import { NavbarComponent } from './core/navbar/navbar.component'
 import { MatSidenavModule } from '@angular/material/sidenav'
+import { TranslateService } from '@ngx-translate/core';
 // import { MQTTService } from './event-channel/event-channel.service'
 
 @Component({
@@ -28,8 +29,11 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   constructor(
     public router: Router,
-    public authService: AuthService
+    public authService: AuthService,
+    private translate: TranslateService
   ) {
+    this.translate.setDefaultLang('en');
+    this.translate.use('en');
     // this.mqttService.connect()
     // this.mqttService.subscribeToTopic('mps/#')
     // this.mqttService.subscribeToTopic('rps/#')
