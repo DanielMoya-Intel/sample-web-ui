@@ -70,6 +70,93 @@
     "dashboard.manageYourDeviceAgain": {
       "value": "5. Manage Your Device",
       "description": "Step to manage your device again"
+    },
+    "configs.header.ciraTitle": {
+      "value": "CIRA Configs",
+      "description": "CIRA Configs title"
+    },
+    "configs.ciraEmptyBody": {
+      "value": "No CIRA Configs",
+      "description": "No CIRA Configs message"
+    },
+    "configs.table.ciraName": {
+      "value": "Name",
+      "description": "Name column header"
+    },
+    "configs.table.ciraMpsserver": {
+      "value": "MPS Server",
+      "description": "MPS Server column header"
+    },
+    "configs.table.ciraPort": {
+      "value": "Port",
+      "description": "Port column header"
+    },
+    "configs.table.ciraUsername": {
+      "value": "Username",
+      "description": "Username column header"
+    },
+    "configs.table.ciraCert": {
+      "value": "Cert Common Name (CN=)",
+      "description": "Cert Common Name column header"
+    },
+    "configs.table.ciraRootcert": {
+      "value": "MPS Root Cert",
+      "description": "MPS Root Cert column header"
+    },
+    "configs.header.ciraNewTitle": {
+      "value": "New CIRA Config",
+      "description": "New CIRA Config page title"
+    },
+    "profiles.header.profileTitle": {
+      "value": "Profiles",
+      "description": "Profiles page title"
+    },
+    "profiles.emptyBody": {
+      "value": "No Profiles",
+      "description": "No Profiles message"
+    },
+    "profiles.table.name": {
+      "value": "Name",
+      "description": "Name column header"
+    },
+    "profiles.table.network": {
+      "value": "Network Config",
+      "description": "Network Config column header"
+    },
+    "profiles.table.connection": {
+      "value": "Connection Config",
+      "description": "Connection Config column header"
+    },
+    "profiles.table.activation": {
+      "value": "Activation Mode",
+      "description": "Activation Mode column header"
+    },
+    "profiles.header.profileNewTitle": {
+      "value": "New Profile",
+      "description": "New Profile page title"
+    },
+    "domains.header.domainsTitle": {
+      "value": "Domains",
+      "description": "Domains page title"
+    },
+    "domains.emptyBody": {
+      "value": "No Domains",
+      "description": "No Domains message"
+    },
+    "domains.table.name": {
+      "value": "Name",
+      "description": "Name column header"
+    },
+    "domains.table.domainSuffix": {
+      "value": "Domain Suffix",
+      "description": "Domain Suffix column header"
+    },
+    "domains.table.expirationDate": {
+      "value": "Expiration Date",
+      "description": "Expiration Date column header"
     }
+
+
+
+
   }
-  

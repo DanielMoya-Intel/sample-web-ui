@@ -30,6 +30,7 @@ import {
 } from '@angular/material/card'
 import { MatProgressBar } from '@angular/material/progress-bar'
 import { MatToolbar } from '@angular/material/toolbar'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-config-detail',
@@ -56,13 +57,14 @@ import { MatToolbar } from '@angular/material/toolbar'
     MatRadioButton,
     MatSlideToggle,
     MatCardActions,
-    MatButton
+    MatButton,
+    TranslateModule,
   ]
 })
 export class ConfigDetailComponent implements OnInit {
   public configForm: FormGroup
   public isLoading = false
-  public pageTitle = 'New CIRA Config'
+  public pageTitle;
   public isEdit = false
   public errorMessages: string[] = []
   constructor(
@@ -70,7 +72,8 @@ export class ConfigDetailComponent implements OnInit {
     public fb: FormBuilder,
     private readonly activeRoute: ActivatedRoute,
     public router: Router,
-    public configsService: ConfigsService
+    public configsService: ConfigsService,
+    public translate: TranslateService
   ) {
     this.configForm = fb.group({
       configName: [null, Validators.required],
@@ -84,6 +87,7 @@ export class ConfigDetailComponent implements OnInit {
       regeneratePassword: [false],
       version: [null]
     })
+    this.pageTitle = this.translate.instant('configs.header.ciraNewTitle.value');
   }
   // IP ADDRESS REGEX
   // ^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$

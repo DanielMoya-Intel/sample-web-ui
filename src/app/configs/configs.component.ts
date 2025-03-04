@@ -30,6 +30,7 @@ import { MatProgressBar } from '@angular/material/progress-bar'
 import { MatIcon } from '@angular/material/icon'
 import { MatButton, MatIconButton } from '@angular/material/button'
 import { MatToolbar } from '@angular/material/toolbar'
+import { TranslateModule } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-configs',
@@ -54,7 +55,8 @@ import { MatToolbar } from '@angular/material/toolbar'
     MatHeaderRow,
     MatRowDef,
     MatRow,
-    MatPaginator
+    MatPaginator,
+    TranslateModule
   ]
 })
 export class ConfigsComponent implements OnInit {
