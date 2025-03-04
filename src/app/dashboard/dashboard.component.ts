@@ -31,7 +31,7 @@ import { TranslateModule } from '@ngx-translate/core'
     MatDivider,
     MatTooltip,
     MatIconButton,
-    RouterLink,    
+    RouterLink,
     TranslateModule
   ]
 })

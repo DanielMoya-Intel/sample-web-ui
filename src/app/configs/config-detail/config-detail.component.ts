@@ -57,7 +57,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
     MatSlideToggle,
     MatCardActions,
     MatButton,
-    TranslateModule,
+    TranslateModule
   ]
 })
 export class ConfigDetailComponent implements OnInit {
@@ -69,7 +69,7 @@ export class ConfigDetailComponent implements OnInit {
 
   public configForm: FormGroup
   public isLoading = false
-  public pageTitle;
+  public pageTitle
   public isEdit = false
   public errorMessages: string[] = []
   constructor(public translate: TranslateService) {
@@ -87,7 +87,7 @@ export class ConfigDetailComponent implements OnInit {
       regeneratePassword: [false],
       version: [null]
     })
-    this.pageTitle = this.translate.instant('configs.header.ciraNewTitle.value');
+    this.pageTitle = this.translate.instant('configs.header.ciraNewTitle.value')
   }
   // IP ADDRESS REGEX
   // ^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$

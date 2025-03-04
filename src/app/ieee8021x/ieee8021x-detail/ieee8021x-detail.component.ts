@@ -80,9 +80,7 @@ export class IEEE8021xDetailComponent implements OnInit {
   pxeTimeoutMax = 60 * 60 * 24 // one day
   pxeTimeoutDefault = 60 * 2 // two mninutes
 
-  constructor(
-    public translate: TranslateService
-  ) {
+  constructor(public translate: TranslateService) {
     const fb = this.fb
 
     this.ieee8021xForm = fb.group({
@@ -123,7 +121,7 @@ export class IEEE8021xDetailComponent implements OnInit {
       }
       this.ieee8021xForm.controls.authenticationProtocol.updateValueAndValidity()
     })
-    this.pageTitle = this.translate.instant('ieee8021xConfigs.header.ieee8021NewTitle.value');
+    this.pageTitle = this.translate.instant('ieee8021xConfigs.header.ieee8021NewTitle.value')
   }
 
   ngOnInit(): void {

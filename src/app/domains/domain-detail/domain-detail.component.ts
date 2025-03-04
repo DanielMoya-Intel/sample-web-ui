@@ -70,9 +70,7 @@ export class DomainDetailComponent implements OnInit {
   public isEdit = false
   public certPassInputType = 'password'
   public errorMessages: string[] = []
-  constructor(
-    public translate: TranslateService
-  ) {
+  constructor(public translate: TranslateService) {
     const fb = this.fb
 
     this.domainForm = fb.group({
@@ -82,7 +80,7 @@ export class DomainDetailComponent implements OnInit {
       provisioningCertPassword: [null, Validators.required],
       version: [null]
     })
-    this.pageTitle = this.translate.instant('domains.header.domainsNewTitle.value');
+    this.pageTitle = this.translate.instant('domains.header.domainsNewTitle.value')
   }
 
   ngOnInit(): void {

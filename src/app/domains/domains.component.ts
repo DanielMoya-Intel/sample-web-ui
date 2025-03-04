@@ -57,7 +57,7 @@ import { TranslateModule } from '@ngx-translate/core'
     MatRow,
     MatPaginator,
     DatePipe,
-    TranslateModule,
+    TranslateModule
   ]
 })
 export class DomainsComponent implements OnInit {

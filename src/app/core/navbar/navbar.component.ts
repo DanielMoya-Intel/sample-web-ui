@@ -25,7 +25,7 @@ import { TranslateModule } from '@ngx-translate/core'
     MatIcon,
     MatListItemIcon,
     MatTooltip,
-    TranslateModule,
+    TranslateModule
   ]
 })
 export class NavbarComponent {

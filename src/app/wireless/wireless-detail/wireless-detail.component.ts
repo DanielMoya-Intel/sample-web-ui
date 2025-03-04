@@ -76,7 +76,7 @@ export class WirelessDetailComponent implements OnInit {
 
   constructor(private translate: TranslateService) {
     const fb = this.fb
-    this.pageTitle = this.translate.instant('wirelessDetail.newWirelessConfig.value');
+    this.pageTitle = this.translate.instant('wirelessDetail.newWirelessConfig.value')
     this.wirelessForm = fb.group({
       profileName: [null, [Validators.required]],
       authenticationMethod: [null, Validators.required],

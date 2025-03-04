@@ -172,7 +172,7 @@ export class ProfileDetailComponent implements OnInit {
       kvmEnabled: [true, Validators.required],
       solEnabled: [true, Validators.required]
     })
-    this.pageTitle = this.translate.instant('profiles.header.profileNewTitle.value');
+    this.pageTitle = this.translate.instant('profiles.header.profileNewTitle.value')
   }
 
   ngOnInit(): void {
