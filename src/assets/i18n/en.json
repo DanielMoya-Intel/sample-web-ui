@@ -4,9 +4,9 @@
       "description": "Main title of the application"
     },
     "toolbar.header.consoleModeTitle": {
-        "value": "Console",
-        "description": "Main title of the application in console mode"
-      },
+      "value": "Console",
+      "description": "Main title of the application in console mode"
+    },
     "dashboard.totalDevices": {
       "value": "Total Devices",
       "description": "Total number of devices"
@@ -52,23 +52,23 @@
       "description": "Description for deployment"
     },
     "dashboard.createWirelessConfig": {
-      "value": "1. Create Wireless Config [Optional]",
+      "value": "Create Wireless Config [Optional]",
       "description": "Step to create a wireless configuration"
     },
     "dashboard.createCiraConfig": {
-      "value": "2. Create a CIRA Config",
+      "value": "Create a CIRA Config",
       "description": "Step to create a CIRA configuration"
     },
     "dashboard.createProfile": {
-      "value": "3. Create a Profile",
+      "value": "Create a Profile",
       "description": "Step to create a profile"
     },
     "dashboard.addProvisioningCertificate": {
-      "value": "4. Add a Provisioning Certificate [Optional]",
+      "value": "Add a Provisioning Certificate [Optional]",
       "description": "Step to add a provisioning certificate"
     },
-    "dashboard.manageYourDeviceAgain": {
-      "value": "5. Manage Your Device",
+    "dashboard.manageYourDeviceStep": {
+      "value": "Manage Your Device",
       "description": "Step to manage your device again"
     },
     "configs.header.ciraTitle": {
@@ -154,6 +154,98 @@
     "domains.table.expirationDate": {
       "value": "Expiration Date",
       "description": "Expiration Date column header"
+    },
+    "wirelessConfigs.title": {
+      "value": "Wireless Configs",
+      "description": "Title for the wireless configurations section"
+    },
+    "wirelessConfigs.addNew": {
+      "value": "Add New",
+      "description": "Button text for adding a new wireless configuration"
+    },
+    "wirelessConfigs.noData": {
+      "value": "No Wireless Configs",
+      "description": "Message displayed when there are no wireless configurations"
+    },
+    "wirelessConfigs.name": {
+      "value": "Name",
+      "description": "Column header for the name of the wireless configuration"
+    },
+    "wirelessConfigs.authentication": {
+      "value": "Authentication",
+      "description": "Column header for the authentication method of the wireless configuration"
+    },
+    "wirelessConfigs.encryption": {
+      "value": "Encryption",
+      "description": "Column header for the encryption method of the wireless configuration"
+    },
+    "wirelessConfigs.ssid": {
+      "value": "SSID",
+      "description": "Column header for the SSID of the wireless configuration"
+    },
+    "wirelessDetail.newWirelessConfig": {
+      "value": "New Wireless Config",
+      "description": "Title for creating a new wireless configuration"
+    },
+    "wirelessDetail.wirelessProfileName": {
+      "value": "Wireless Profile Name",
+      "description": "Label for the wireless profile name field"
+    },
+    "wirelessDetail.wirelessProfileNameHint": {
+      "value": "Provide a name for this wireless profile.",
+      "description": "Hint for the wireless profile name field"
+    },
+    "wirelessDetail.authenticationMethod": {
+      "value": "Authentication Method",
+      "description": "Label for the authentication method field"
+    },
+    "wirelessDetail.pskPassphrase": {
+      "value": "PSK Passphrase",
+      "description": "Label for the PSK passphrase field"
+    },
+    "wirelessDetail.pskPassphraseHint": {
+      "value": "This field is required and must be between 8 and 32 characters",
+      "description": "Hint for the PSK passphrase field"
+    },
+    "wirelessDetail.ieee8021xConfiguration": {
+      "value": "802.1x Configuration",
+      "description": "Label for the 802.1x configuration field"
+    },
+    "wirelessDetail.encryptionMethod": {
+      "value": "Encryption Method",
+      "description": "Label for the encryption method field"
+    },
+    "wirelessDetail.ssid": {
+      "value": "SSID",
+      "description": "Label for the SSID field"
+    },
+    "wirelessDetail.ssidHint": {
+      "value": "This field is required",
+      "description": "Hint for the SSID field"
+    },
+    "wirelessDetail.cancel": {
+      "value": "CANCEL",
+      "description": "Text for the cancel button"
+    },
+    "wirelessDetail.save": {
+      "value": "SAVE",
+      "description": "Text for the save button"
+    },
+    "wirelessDetail.errorRequiredField": {
+      "value": "This field is required and must be alphanumeric with no spaces or symbols.",
+      "description": "Error message for required fields"
+    },
+    "wirelessDetail.errorCreatingUpdatingProfile": {
+      "value": "Error creating/updating wireless profile",
+      "description": "Error message for creating/updating wireless profile"
+    },
+    "wirelessDetail.profileUpdatedSuccessfully": {
+      "value": "Profile updated successfully",
+      "description": "Success message for updating wireless profile"
+    },
+    "wirelessDetail.profileCreatedSuccessfully": {
+      "value": "Profile created successfully",
+      "description": "Success message for creating wireless profile"
     }
 
 
