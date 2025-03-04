@@ -15,7 +15,7 @@
 <mat-card>
   <mat-card-content>
     @if (isNoData()) {
-      <h3 class="flex justify-center">{{ 'configs.ciraEmptyBody.value' | translate  }}</h3>
+      <h3 class="flex justify-center">{{ 'configs.ciranoData.value' | translate  }}</h3>
     } @else {
       <mat-table [dataSource]="configs.data">
         <!-- name Column -->

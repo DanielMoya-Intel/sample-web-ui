@@ -62,9 +62,9 @@
     @if (isNoData()) {
     <h3 class="flex justify-center">
       @if (!filteredTags.length) {
-      <span>{{'devices.emptyBody.value' | translate}}</span>
+      <span>{{'devices.noData.value' | translate}}</span>
       } @else {
-      <span>{{'devices.emptyBodyFilter.value' | translate}}</span>
+      <span>{{'devices.noDataFilter.value' | translate}}</span>
       }
     </h3>
     } @else {

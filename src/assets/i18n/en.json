@@ -83,7 +83,7 @@
       "value": "CIRA Configs",
       "description": "CIRA Configs title"
     },
-    "configs.ciraEmptyBody": {
+    "configs.ciranoData": {
       "value": "No CIRA Configs",
       "description": "No CIRA Configs message"
     },
@@ -119,7 +119,7 @@
       "value": "Profiles",
       "description": "Profiles page title"
     },
-    "profiles.emptyBody": {
+    "profiles.noData": {
       "value": "No Profiles",
       "description": "No Profiles message"
     },
@@ -147,7 +147,7 @@
       "value": "Domains",
       "description": "Domains page title"
     },
-    "domains.emptyBody": {
+    "domains.noData": {
       "value": "No Domains",
       "description": "No Domains message"
     },
@@ -171,11 +171,11 @@
       "value": "Devices",
       "description": "Devices page title"
     },
-    "devices.emptyBody": {
+    "devices.noData": {
       "value": "No Devices",
       "description": "No Devices message"
     },
-    "devices.emptyBodyFilter": {
+    "devices.noDataFilter": {
       "value": "No Devices Match Filter Selection",
       "description": "No Devices filtered message"
     },
@@ -203,7 +203,7 @@
       "value": "IEEE8021x Configs",
       "description": "IEEE8021x Configs page title"
     },
-    "ieee8021xConfigs.emptyBody": {
+    "ieee8021xConfigs.noData": {
       "value": "No IEEE 8021x Configs",
       "description": "No IEEE 8021x Configs message"
     },

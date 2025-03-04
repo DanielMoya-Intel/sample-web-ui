@@ -14,7 +14,7 @@
 <mat-card>
   <mat-card-content>
     @if (isNoData()) {
-    <h3 class="flex justify-center">{{'profiles.emptyBody.value' | translate}}</h3>
+    <h3 class="flex justify-center">{{'profiles.noData.value' | translate}}</h3>
     } @else {
     <mat-table [dataSource]="profiles">
       <!-- name Column -->

@@ -16,7 +16,7 @@
 <mat-card>
   <mat-card-content>
     @if (isNoData()) {
-      <h3 class="flex justify-center">{{'ieee8021xConfigs.emptyBody.value' | translate}}</h3>
+      <h3 class="flex justify-center">{{'ieee8021xConfigs.noData.value' | translate}}</h3>
     } @else {
       <mat-table [dataSource]="pagedConfigs.data">
         <ng-container matColumnDef="profileName">
