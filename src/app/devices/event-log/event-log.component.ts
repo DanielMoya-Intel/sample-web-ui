@@ -3,31 +3,21 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, AfterViewInit, ViewChild, inject, signal } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
-import {
-  MatTableDataSource,
-  MatTable,
-  MatColumnDef,
-  MatHeaderCellDef,
-  MatHeaderCell,
-  MatCellDef,
-  MatCell,
-  MatHeaderRowDef,
-  MatHeaderRow,
-  MatRowDef,
-  MatRow
-} from '@angular/material/table'
+import { MatTableDataSource, MatTableModule } from '@angular/material/table'
 import { of } from 'rxjs'
-import { catchError, finalize, take } from 'rxjs/operators'
+import { catchError, finalize } from 'rxjs/operators'
 import SnackbarDefaults from 'src/app/shared/config/snackBarDefault'
 import { EventLog } from 'src/models/models'
-import { DevicesService } from '../devices.service'
 import { MomentModule } from 'ngx-moment'
-import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card'
+import { MatCardModule } from '@angular/material/card'
 import { MatProgressBar } from '@angular/material/progress-bar'
-import { MatToolbar } from '@angular/material/toolbar'
 import { environment } from 'src/environments/environment'
+import { MatButtonModule } from '@angular/material/button'
+import { DeviceLogService } from '../device-log.service'
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator'
+import { MatIconModule } from '@angular/material/icon'
 
 type EventTypeMap = Record<number, string>
 const EVENTTYPEMAP: EventTypeMap = {
@@ -41,44 +31,40 @@ const EVENTTYPEMAP: EventTypeMap = {
   selector: 'app-event-log',
   templateUrl: './event-log.component.html',
   styleUrls: ['./event-log.component.scss'],
-  standalone: true,
   imports: [
     MatProgressBar,
-    MatCard,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardContent,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCellDef,
-    MatHeaderCell,
-    MatCellDef,
-    MatCell,
-    MatHeaderRowDef,
-    MatHeaderRow,
-    MatRowDef,
-    MatRow,
-    MomentModule
+    MatCardModule,
+    MatTableModule,
+    MatButtonModule,
+    MomentModule,
+    MatPaginatorModule,
+    MatIconModule
   ]
 })
-export class EventLogComponent implements OnInit {
+export class EventLogComponent implements AfterViewInit {
+  snackBar = inject(MatSnackBar)
+  private readonly deviceLogService = inject(DeviceLogService)
+
   @Input()
   public deviceId = ''
 
-  public isLoading = true
+  @ViewChild(MatPaginator) paginator!: MatPaginator
+
+  public isLoading = signal(true)
   public displayedColumns = [
     'Event',
     'Event Type',
     'timestamp'
   ]
 
-  public eventLogData: EventLog[] = []
   public isCloudMode: boolean = environment.cloud
-  public dataSource = new MatTableDataSource(this.eventLogData)
-  constructor(
-    public snackBar: MatSnackBar,
-    private readonly devicesService: DevicesService
-  ) {
+
+  public dataSource = new MatTableDataSource<EventLog>([])
+  public hasMoreRecords = false
+  public pageSize = 10
+  public currentPageIndex = 0
+
+  constructor() {
     if (!this.isCloudMode) {
       this.displayedColumns = [
         'Event',
@@ -89,23 +75,44 @@ export class EventLogComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.isLoading = true
-    this.devicesService
-      .getEventLog(this.deviceId)
+  ngAfterViewInit(): void {
+    if (this.isCloudMode) {
+      this.isLoading.set(true)
+      this.deviceLogService
+        .getEventLog(this.deviceId)
+        .pipe(
+          catchError(() => {
+            this.snackBar.open($localize`Error retrieving event log`, undefined, SnackbarDefaults.defaultError)
+            return of({ records: [], hasMoreRecords: true })
+          }),
+          finalize(() => {
+            this.isLoading.set(false)
+          })
+        )
+        .subscribe((data) => {
+          this.dataSource.data = data.records
+        })
+    } else {
+      this.loadEventLogs(0)
+    }
+  }
+
+  loadEventLogs(startIndex: number): void {
+    this.isLoading.set(true)
+    this.deviceLogService
+      .getEventLog(this.deviceId, startIndex, this.pageSize)
       .pipe(
-        catchError((err) => {
-          console.error(err)
+        catchError(() => {
           this.snackBar.open($localize`Error retrieving event log`, undefined, SnackbarDefaults.defaultError)
-          return of(this.eventLogData)
+          return of({ records: [], hasMoreRecords: true })
         }),
         finalize(() => {
-          this.isLoading = false
+          this.isLoading.set(false)
         })
       )
       .subscribe((data) => {
-        this.eventLogData = data || []
-        this.dataSource.data = this.eventLogData
+        this.hasMoreRecords = data.hasMoreRecords
+        this.dataSource.data = data.records
       })
   }
 
@@ -113,7 +120,29 @@ export class EventLogComponent implements OnInit {
     return EVENTTYPEMAP[eventType]
   }
 
+  nextPage(): void {
+    this.loadEventLogs(++this.currentPageIndex * this.pageSize)
+  }
+
+  lastPage(): void {
+    this.loadEventLogs(--this.currentPageIndex * this.pageSize)
+  }
+
   isNoData(): boolean {
-    return this.isLoading || this.eventLogData?.length === 0
+    return this.isLoading() || this.dataSource.data.length === 0
+  }
+  download(): void {
+    this.isLoading.set(true)
+    this.deviceLogService.downloadEventLog(this.deviceId).subscribe((data) => {
+      const blob = new Blob([data], { type: 'application/octet-stream' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `event_${this.deviceId}.csv`
+      a.click()
+
+      window.URL.revokeObjectURL(url)
+      this.isLoading.set(false)
+    })
   }
 }

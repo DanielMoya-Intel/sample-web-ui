@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog'
@@ -54,7 +54,6 @@ const NO_WIFI_CONFIGS = 'No Wifi Configs Found'
   selector: 'app-profile-detail',
   templateUrl: './profile-detail.component.html',
   styleUrls: ['./profile-detail.component.scss'],
-  standalone: true,
   imports: [
     MatToolbar,
     MatProgressBar,
@@ -96,6 +95,16 @@ const NO_WIFI_CONFIGS = 'No Wifi Configs Found'
   ]
 })
 export class ProfileDetailComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  fb = inject(FormBuilder)
+  router = inject(Router)
+  private readonly activeRoute = inject(ActivatedRoute)
+  profilesService = inject(ProfilesService)
+  private readonly configsService = inject(ConfigsService)
+  private readonly wirelessService = inject(WirelessService)
+  private readonly ieee8021xService = inject(IEEE8021xService)
+  dialog = inject(MatDialog)
+
   profileForm: FormGroup
   pageTitle: string
   isLoading = false
@@ -131,18 +140,9 @@ export class ProfileDetailComponent implements OnInit {
     direct: 'DIRECT'
   }
 
-  constructor(
-    public snackBar: MatSnackBar,
-    public fb: FormBuilder,
-    public router: Router,
-    private readonly activeRoute: ActivatedRoute,
-    public profilesService: ProfilesService,
-    private readonly configsService: ConfigsService,
-    private readonly wirelessService: WirelessService,
-    private readonly ieee8021xService: IEEE8021xService,
-    public dialog: MatDialog,
-    public translate: TranslateService
-  ) {
+  constructor(public translate: TranslateService) {
+    const fb = this.fb
+
     this.profileForm = fb.group({
       profileName: [null, Validators.required],
       activation: ['acmactivate', Validators.required],

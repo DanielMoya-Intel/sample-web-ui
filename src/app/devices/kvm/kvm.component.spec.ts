@@ -4,16 +4,17 @@
  **********************************************************************/
 
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ActivatedRoute, NavigationStart, RouterEvent, Router, RouterModule } from '@angular/router'
 import { of, ReplaySubject, Subject, throwError } from 'rxjs'
 import { KvmComponent } from './kvm.component'
 import { DevicesService } from '../devices.service'
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { NoopAnimationsModule } from '@angular/platform-browser/animations'
 import SnackbarDefaults from 'src/app/shared/config/snackBarDefault'
 import { MatDialog } from '@angular/material/dialog'
-import { Device, UserConsentResponse } from 'src/models/models'
+import { Device } from 'src/models/models'
 import { UserConsentService } from '../user-consent.service'
+import { IDERComponent, KVMComponent } from '@open-amt-cloud-toolkit/ui-toolkit-angular'
 
 describe('KvmComponent', () => {
   let component: KvmComponent
@@ -51,10 +52,26 @@ describe('KvmComponent', () => {
     ])
 
     setAmtFeaturesSpy = devicesService.setAmtFeatures.and.returnValue(
-      of({ userConsent: 'none', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 })
+      of({
+        userConsent: 'none',
+        KVM: true,
+        SOL: true,
+        IDER: true,
+        redirection: true,
+        kvmAvailable: true,
+        optInState: 0
+      })
     )
     getAMTFeaturesSpy = devicesService.getAMTFeatures.and.returnValue(
-      of({ userConsent: 'none', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 })
+      of({
+        userConsent: 'none',
+        KVM: true,
+        SOL: true,
+        IDER: true,
+        redirection: true,
+        kvmAvailable: true,
+        optInState: 0
+      })
     )
     devicesService.getDevice.and.returnValue(
       of({
@@ -91,9 +108,16 @@ describe('KvmComponent', () => {
     }
 
     @Component({
-      selector: 'app-kvm',
-      standalone: true,
+      // eslint-disable-next-line @angular-eslint/component-selector
+      selector: 'amt-ider',
       imports: []
+    })
+    class TestAMTIDERComponent {}
+
+    @Component({
+      // eslint-disable-next-line @angular-eslint/component-selector
+      selector: 'amt-kvm',
+      template: '<canvas></canvas>'
     })
     class TestAMTKVMComponent {
       @Input()
@@ -115,29 +139,26 @@ describe('KvmComponent', () => {
       deviceStatus = new EventEmitter<number>()
     }
 
-    @Component({
-      selector: 'app-device-toolbar',
-      standalone: true,
-      imports: []
+    TestBed.overrideComponent(KvmComponent, {
+      remove: { imports: [IDERComponent] },
+      add: { imports: [TestAMTIDERComponent] }
     })
-    class TestDeviceToolbarComponent {
-      @Input()
-      isLoading = false
-
-      @Input()
-      deviceState = 0
-    }
+    TestBed.overrideComponent(KvmComponent, {
+      remove: { imports: [KVMComponent] },
+      add: { imports: [TestAMTKVMComponent] }
+    })
+    TestBed.overrideComponent(KvmComponent, {
+      remove: { imports: [KVMComponent] },
+      add: { imports: [TestAMTKVMComponent] }
+    })
 
     await TestBed.configureTestingModule({
       imports: [
-        BrowserAnimationsModule,
+        NoopAnimationsModule,
         RouterModule,
-        KvmComponent,
-        TestDeviceToolbarComponent,
-        TestAMTKVMComponent
+        KvmComponent
       ],
       providers: [
-        { provide: ComponentFixtureAutoDetect, useValue: true }, // trigger automatic change detection
         { provide: DevicesService, useValue: { ...devicesService, ...websocketStub, ...authServiceStub } },
         { provide: UserConsentService, useValue: userConsentService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'guid' }) } }
@@ -162,6 +183,7 @@ describe('KvmComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+    fixture.detectChanges()
     expect(tokenSpy).toHaveBeenCalled()
     expect(getPowerStateSpy).toHaveBeenCalled()
     expect(getAMTFeaturesSpy).toHaveBeenCalled()
@@ -169,8 +191,10 @@ describe('KvmComponent', () => {
   })
   it('should have correct state on websocket events', () => {
     authServiceStub.startwebSocket.emit(true)
+    fixture.detectChanges()
     expect(component.isLoading).toBeFalse()
     authServiceStub.stopwebSocket.emit(true)
+    fixture.detectChanges()
     expect(component.isDisconnecting).toBeTruthy()
   })
   it('should not show error and hide loading when isDisconnecting is true', () => {
@@ -233,6 +257,7 @@ describe('KvmComponent', () => {
           SOL: true,
           IDER: true,
           redirection: true,
+          kvmAvailable: true,
           optInState: 0
         })
         expect(component.isLoading).toBe(true)
@@ -288,10 +313,19 @@ describe('KvmComponent', () => {
   })
   it('checkUserConsent yes', async () => {
     component.checkUserConsent()
+    fixture.detectChanges()
     expect(component.readyToLoadKvm).toBe(true)
   })
   it('checkUserConsent no', async () => {
-    component.amtFeatures = { userConsent: 'all', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'all',
+      KVM: true,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     component.readyToLoadKvm = false
     component.checkUserConsent()
     expect(component.readyToLoadKvm).toBe(false)
@@ -313,7 +347,15 @@ describe('KvmComponent', () => {
     })
   })
   it('handleAMTFeatureResponse KVM already enabled', (done) => {
-    component.amtFeatures = { userConsent: 'none', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: true,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       next: (results) => {
         expect(results).toEqual(true)
@@ -322,7 +364,15 @@ describe('KvmComponent', () => {
     })
   })
   it('handleAMTFeatureResponse enableKvmDialog error', (done) => {
-    component.amtFeatures = { userConsent: 'none', KVM: false, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: false,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     spyOn(component, 'enableKvmDialog').and.returnValue(throwError(new Error('err')))
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       error: () => {
@@ -333,7 +383,15 @@ describe('KvmComponent', () => {
   })
   it('handleAMTFeatureResponse cancel enableSol', async () => {
     const cancelEnableSolResponseSpy = spyOn(component, 'cancelEnableKvmResponse')
-    component.amtFeatures = { userConsent: 'none', KVM: false, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: false,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     spyOn(component, 'enableKvmDialog').and.returnValue(of(false))
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       next: (results) => {
@@ -343,7 +401,15 @@ describe('KvmComponent', () => {
     })
   })
   it('handleAMTFeatureResponse enableSol', (done) => {
-    component.amtFeatures = { userConsent: 'none', KVM: false, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: false,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     spyOn(component, 'enableKvmDialog').and.returnValue(of(true))
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       next: () => {

@@ -1,3 +1,75 @@
+# [3.32.0](https://github.com/device-management-toolkit/sample-web-ui/compare/v3.31.3...v3.32.0) (2025-02-26)
+
+
+### Features
+
+* **docker:** enable multiarch build ([4c10c0b](https://github.com/device-management-toolkit/sample-web-ui/commit/4c10c0bf45e8b4c64497e8e0d911d2e91a65e6f1))
+
+## [3.31.3](https://github.com/device-management-toolkit/sample-web-ui/compare/v3.31.2...v3.31.3) (2025-02-21)
+
+## [3.31.2](https://github.com/device-management-toolkit/sample-web-ui/compare/v3.31.1...v3.31.2) (2025-02-11)
+
+
+### Bug Fixes
+
+* add NGX_MONACO_EDITOR_CONFIG provider to ExplorerComponent ([063b087](https://github.com/device-management-toolkit/sample-web-ui/commit/063b0876fc02727dfbe7e0ce721d72a7e118110f))
+
+## [3.31.1](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.31.0...v3.31.1) (2025-02-05)
+
+
+### Bug Fixes
+
+* disable kvm for ISM systems ([#2471](https://github.com/open-amt-cloud-toolkit/sample-web-ui/issues/2471)) ([1ff7f56](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/1ff7f566737225dd782cc156617b960767d848d6))
+
+# [3.31.0](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.30.2...v3.31.0) (2025-02-05)
+
+
+### Features
+
+* enable support oauth 2.0 w/ PKCE ([3e47698](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/3e476984f355a34eac455887987a7fe2e3b23712))
+
+## [3.30.2](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.30.1...v3.30.2) (2025-02-04)
+
+
+### Bug Fixes
+
+* add pagination for event logs ([#2456](https://github.com/open-amt-cloud-toolkit/sample-web-ui/issues/2456)) ([fa63cbe](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/fa63cbe8d35b7a77fe8250f7d6870da4194377d5))
+
+## [3.30.1](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.30.0...v3.30.1) (2025-01-30)
+
+
+### Bug Fixes
+
+* adds an option to select domain before profile export ([#2425](https://github.com/open-amt-cloud-toolkit/sample-web-ui/issues/2425)) ([e80b424](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/e80b42460848bd44745ba46eb02d20cf53bd9cda))
+
+# [3.30.0](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.29.0...v3.30.0) (2025-01-14)
+
+
+### Features
+
+* enable KVM fullscreen mode ([#2418](https://github.com/open-amt-cloud-toolkit/sample-web-ui/issues/2418)) ([df4c40c](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/df4c40c67657bc6336032f49379e652ea65c9e4a))
+
+# [3.29.0](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.28.0...v3.29.0) (2025-01-09)
+
+
+### Features
+
+* enable download for audit/event logs ([#2408](https://github.com/open-amt-cloud-toolkit/sample-web-ui/issues/2408)) ([cf322b6](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/cf322b6261b87665ab055e6296fbfa0932679eb5))
+
+# [3.28.0](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.27.5...v3.28.0) (2025-01-06)
+
+
+### Features
+
+* make connection modes clearer ([0858fdf](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/0858fdf85119a614cce283cc6dbaef344fa0eac3))
+
+## [3.27.5](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.27.4...v3.27.5) (2024-12-12)
+
+
+### Bug Fixes
+
+* update power button for hard reset ([93899a3](https://github.com/open-amt-cloud-toolkit/sample-web-ui/commit/93899a3b21f11345d50c0fed522fe1f1e728940d))
+
 ## [3.27.4](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.27.3...v3.27.4) (2024-11-14)
 
 ## [3.27.3](https://github.com/open-amt-cloud-toolkit/sample-web-ui/compare/v3.27.2...v3.27.3) (2024-11-08)

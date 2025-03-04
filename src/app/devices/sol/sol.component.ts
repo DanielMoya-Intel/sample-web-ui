@@ -11,7 +11,8 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
-  HostListener
+  HostListener,
+  inject
 } from '@angular/core'
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router'
 import { defer, iif, Observable, of, Subscription, throwError } from 'rxjs'
@@ -25,7 +26,6 @@ import { AMTFeaturesRequest, AMTFeaturesResponse, PowerState, UserConsentRespons
 import { PowerUpAlertComponent } from 'src/app/shared/power-up-alert/power-up-alert.component'
 import { DeviceEnableSolComponent } from '../device-enable-sol/device-enable-sol.component'
 import { SOLComponent } from '@open-amt-cloud-toolkit/ui-toolkit-angular'
-import { DeviceToolbarComponent } from '../device-toolbar/device-toolbar.component'
 import { MatToolbar } from '@angular/material/toolbar'
 import { MatIcon } from '@angular/material/icon'
 import { MatButton } from '@angular/material/button'
@@ -36,16 +36,21 @@ import { UserConsentService } from '../user-consent.service'
   templateUrl: './sol.component.html',
   styleUrls: ['./sol.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  standalone: true,
   imports: [
     MatToolbar,
     MatIcon,
-    DeviceToolbarComponent,
     MatButton,
     SOLComponent
   ]
 })
 export class SolComponent implements OnInit, OnDestroy {
+  private readonly activatedRoute = inject(ActivatedRoute)
+  private readonly devicesService = inject(DevicesService)
+  private readonly userConsentService = inject(UserConsentService)
+  snackBar = inject(MatSnackBar)
+  dialog = inject(MatDialog)
+  private readonly router = inject(Router)
+
   @Input()
   public deviceId = ''
 
@@ -66,14 +71,7 @@ export class SolComponent implements OnInit, OnDestroy {
   stopSocketSubscription!: Subscription
   startSocketSubscription!: Subscription
 
-  constructor(
-    private readonly activatedRoute: ActivatedRoute,
-    private readonly devicesService: DevicesService,
-    private readonly userConsentService: UserConsentService,
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    private readonly router: Router
-  ) {
+  constructor() {
     if (environment.mpsServer.includes('/mps')) {
       // handles kong route
       this.mpsServer = `${environment.mpsServer.replace('http', 'ws')}/ws/relay`
@@ -112,13 +110,13 @@ export class SolComponent implements OnInit, OnDestroy {
       .subscribe()
 
     // used for receiving messages from the sol connect button on the toolbar
-    this.startSocketSubscription = this.devicesService.startwebSocket.subscribe((data: boolean) => {
+    this.startSocketSubscription = this.devicesService.startwebSocket.subscribe(() => {
       this.init()
       this.deviceConnection.emit(true)
     })
 
     // used for receiving messages from the sol disconnect button on the toolbar
-    this.stopSocketSubscription = this.devicesService.stopwebSocket.subscribe((data: boolean) => {
+    this.stopSocketSubscription = this.devicesService.stopwebSocket.subscribe(() => {
       this.isDisconnecting = true
       this.deviceConnection.emit(false)
     })
@@ -169,7 +167,6 @@ export class SolComponent implements OnInit, OnDestroy {
 
   @HostListener('window:beforeunload', ['$event'])
   beforeUnloadHandler() {
-    console.log('Disconnecting KVM')
     this.disconnect()
   }
 

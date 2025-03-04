@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 import { ActivatedRoute, NavigationStart, Router, RouterEvent, RouterModule } from '@angular/router'
 import { of, ReplaySubject, Subject, throwError } from 'rxjs'
 import { SolComponent } from './sol.component'
@@ -50,10 +50,26 @@ describe('SolComponent', () => {
 
     devicesService.TargetOSMap = { 0: 'Unknown' } as any
     setAmtFeaturesSpy = devicesService.setAmtFeatures.and.returnValue(
-      of({ userConsent: 'none', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 })
+      of({
+        userConsent: 'none',
+        KVM: true,
+        SOL: true,
+        IDER: true,
+        redirection: true,
+        kvmAvailable: true,
+        optInState: 0
+      })
     )
     getAMTFeaturesSpy = devicesService.getAMTFeatures.and.returnValue(
-      of({ userConsent: 'none', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 })
+      of({
+        userConsent: 'none',
+        KVM: true,
+        SOL: true,
+        IDER: true,
+        redirection: true,
+        kvmAvailable: true,
+        optInState: 0
+      })
     )
     devicesService.getDevice.and.returnValue(
       of({
@@ -82,8 +98,8 @@ describe('SolComponent', () => {
     }
 
     @Component({
-      selector: 'app-sol',
-      standalone: true,
+      // eslint-disable-next-line @angular-eslint/component-selector
+      selector: 'amt-sol',
       imports: []
     })
     class TestAMTSOLComponent {
@@ -104,7 +120,6 @@ describe('SolComponent', () => {
     }
     @Component({
       selector: 'app-device-toolbar',
-      standalone: true,
       imports: []
     })
     class TestDeviceToolbarComponent {
@@ -124,7 +139,6 @@ describe('SolComponent', () => {
         TestAMTSOLComponent
       ],
       providers: [
-        { provide: ComponentFixtureAutoDetect, useValue: true }, // trigger automatic change detection
         { provide: DevicesService, useValue: { ...devicesService, ...authServiceStub } },
         { provide: UserConsentService, useValue: userConsentService },
         { provide: ActivatedRoute, useValue: { params: of({ id: 'guid' }) } }
@@ -148,14 +162,17 @@ describe('SolComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy()
+    fixture.detectChanges()
     expect(tokenSpy).toHaveBeenCalled()
     expect(getPowerStateSpy).toHaveBeenCalled()
     expect(getAMTFeaturesSpy).toHaveBeenCalled()
   })
   it('should have correct state on websocket events', () => {
     authServiceStub.startwebSocket.emit(true)
+    fixture.detectChanges()
     expect(component.isLoading).toBeFalse()
     authServiceStub.stopwebSocket.emit(true)
+    fixture.detectChanges()
     expect(component.isDisconnecting).toBeTruthy()
   })
   it('should not show error and hide loading when isDisconnecting is true', () => {
@@ -214,6 +231,7 @@ describe('SolComponent', () => {
         expect(getAMTFeaturesSpy).toHaveBeenCalled()
         expect(result).toEqual({
           userConsent: 'none',
+          kvmAvailable: true,
           KVM: true,
           SOL: true,
           IDER: true,
@@ -243,10 +261,19 @@ describe('SolComponent', () => {
   })
   it('checkUserConsent yes', async () => {
     component.checkUserConsent()
+    fixture.detectChanges()
     expect(component.readyToLoadSol).toBe(true)
   })
   it('checkUserConsent no', async () => {
-    component.amtFeatures = { userConsent: 'all', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'all',
+      KVM: true,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     component.readyToLoadSol = false
     component.checkUserConsent()
     expect(component.readyToLoadSol).toBe(false)
@@ -268,7 +295,15 @@ describe('SolComponent', () => {
   })
 
   it('handleAMTFeatureResponse SOL already enabled', async () => {
-    component.amtFeatures = { userConsent: 'none', KVM: true, SOL: true, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: true,
+      SOL: true,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       next: (results) => {
         expect(results).toEqual(true)
@@ -276,7 +311,15 @@ describe('SolComponent', () => {
     })
   })
   it('handleAMTFeatureResponse enableSolDialog error', async () => {
-    component.amtFeatures = { userConsent: 'none', KVM: true, SOL: false, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: true,
+      SOL: false,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     spyOn(component, 'enableSolDialog').and.returnValue(throwError(new Error('err')))
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       error: () => {
@@ -286,7 +329,15 @@ describe('SolComponent', () => {
   })
   it('handleAMTFeatureResponse cancel enableSol', (done) => {
     const cancelEnableSolResponseSpy = spyOn(component, 'cancelEnableSolResponse')
-    component.amtFeatures = { userConsent: 'none', KVM: true, SOL: false, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: true,
+      SOL: false,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     spyOn(component, 'enableSolDialog').and.returnValue(of(false))
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       next: (results) => {
@@ -297,7 +348,15 @@ describe('SolComponent', () => {
     })
   })
   it('handleAMTFeatureResponse enableSol', (done) => {
-    component.amtFeatures = { userConsent: 'none', KVM: true, SOL: false, IDER: true, redirection: true, optInState: 0 }
+    component.amtFeatures = {
+      userConsent: 'none',
+      KVM: true,
+      SOL: false,
+      IDER: true,
+      redirection: true,
+      kvmAvailable: true,
+      optInState: 0
+    }
     spyOn(component, 'enableSolDialog').and.returnValue(of(true))
     component.handleAMTFeaturesResponse(component.amtFeatures).subscribe({
       next: () => {
