@@ -23,6 +23,7 @@ import { MatList, MatListItem } from '@angular/material/list'
 import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card'
 import { MatToolbar } from '@angular/material/toolbar'
 import { WirelessConfig } from 'src/models/models'
+import { TranslateModule, TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-wireless-detail',
@@ -48,12 +49,13 @@ import { WirelessConfig } from 'src/models/models'
     MatSuffix,
     MatTooltip,
     MatCardActions,
-    MatButton
+    MatButton,
+    TranslateModule
   ]
 })
 export class WirelessDetailComponent implements OnInit {
   public wirelessForm: FormGroup
-  public pageTitle = 'New Wireless Config'
+  public pageTitle: string
   public pskInputType = 'password'
   public pskMinLen = 8
   public pskMaxLen = 32
@@ -72,8 +74,10 @@ export class WirelessDetailComponent implements OnInit {
     private readonly activeRoute: ActivatedRoute,
     public router: Router,
     public wirelessService: WirelessService,
-    private readonly ieee8021xService: IEEE8021xService
+    private readonly ieee8021xService: IEEE8021xService,
+    private translate: TranslateService
   ) {
+    this.pageTitle = this.translate.instant('wirelessDetail.newWirelessConfig.value');
     this.wirelessForm = fb.group({
       profileName: [null, [Validators.required]],
       authenticationMethod: [null, Validators.required],
