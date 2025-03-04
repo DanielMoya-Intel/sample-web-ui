@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, ViewChild, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Router } from '@angular/router'
@@ -36,7 +36,6 @@ import { TranslateModule } from '@ngx-translate/core'
   selector: 'app-configs',
   templateUrl: './configs.component.html',
   styleUrls: ['./configs.component.scss'],
-  standalone: true,
   imports: [
     MatToolbar,
     MatButton,
@@ -60,6 +59,11 @@ import { TranslateModule } from '@ngx-translate/core'
   ]
 })
 export class ConfigsComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  dialog = inject(MatDialog)
+  router = inject(Router)
+  private readonly configsService = inject(ConfigsService)
+
   public configs: DataWithCount<CIRAConfig> = { data: [], totalCount: 0 }
   public isLoading = true
   displayedColumns: string[] = [
@@ -78,13 +82,6 @@ export class ConfigsComponent implements OnInit {
   }
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
-
-  constructor(
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    public router: Router,
-    private readonly configsService: ConfigsService
-  ) {}
 
   ngOnInit(): void {
     this.getData(this.pageEvent)
@@ -126,7 +123,7 @@ export class ConfigsComponent implements OnInit {
             })
           )
           .subscribe({
-            next: (data) => {
+            next: () => {
               this.getData(this.pageEvent)
               this.snackBar.open(
                 $localize`CIRA config deleted successfully`,

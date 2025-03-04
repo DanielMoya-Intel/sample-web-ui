@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -33,7 +33,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
   selector: 'app-domain-detail',
   templateUrl: './domain-detail.component.html',
   styleUrls: ['./domain-detail.component.scss'],
-  standalone: true,
   imports: [
     MatToolbar,
     MatProgressBar,
@@ -59,6 +58,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
   ]
 })
 export class DomainDetailComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  fb = inject(FormBuilder)
+  private readonly activeRoute = inject(ActivatedRoute)
+  router = inject(Router)
+  domainsService = inject(DomainsService)
+
   public domainForm: FormGroup
   public isLoading = false
   public pageTitle: string
@@ -66,13 +71,10 @@ export class DomainDetailComponent implements OnInit {
   public certPassInputType = 'password'
   public errorMessages: string[] = []
   constructor(
-    public snackBar: MatSnackBar,
-    public fb: FormBuilder,
-    private readonly activeRoute: ActivatedRoute,
-    public router: Router,
-    public domainsService: DomainsService,
     public translate: TranslateService
   ) {
+    const fb = this.fb
+
     this.domainForm = fb.group({
       profileName: [null, Validators.required],
       domainSuffix: [null, Validators.required],
@@ -131,7 +133,7 @@ export class DomainDetailComponent implements OnInit {
           })
         )
         .subscribe({
-          next: (data) => {
+          next: () => {
             this.snackBar.open(
               $localize`Domain profile ${reqType} successfully`,
               undefined,

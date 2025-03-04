@@ -1,27 +1,26 @@
-/// <reference types="@angular/localize" />
-
 /*********************************************************************
  * Copyright (c) Intel Corporation 2022
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { enableProdMode, importProvidersFrom } from '@angular/core'
+import { enableProdMode, importProvidersFrom, inject, provideAppInitializer } from '@angular/core'
 import { environment } from './environments/environment'
 import { AppComponent } from './app/app.component'
-import { LoginComponent } from './app/login/login.component'
-import { DashboardComponent } from './app/dashboard/dashboard.component'
 import { provideRouter } from '@angular/router'
 import { provideAnimations } from '@angular/platform-browser/animations'
-import { AppRoutingModule } from './app/app-routing.module'
-import { BrowserModule, bootstrapApplication } from '@angular/platform-browser'
+import { routes } from './app/routes'
+import { bootstrapApplication } from '@angular/platform-browser'
 import { MomentModule } from 'ngx-moment'
-import { AuthorizeInterceptor } from './app/authorize.interceptor'
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http'
+import { provideHttpClient, withInterceptors, withInterceptorsFromDi } from '@angular/common/http'
+import { OAuthService, provideOAuthClient } from 'angular-oauth2-oidc'
+import { AuthGuard } from './app/shared/auth-guard.service'
+import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks'
+import { errorHandlingInterceptor } from './app/error-handling.interceptor'
+import { authorizationInterceptor } from './app/authorize.interceptor'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
 import { HttpClient } from '@angular/common/http'
 
-// AoT requires an exported function for factories
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json')
 }
@@ -29,35 +28,46 @@ export function HttpLoaderFactory(http: HttpClient) {
 if (environment.production) {
   enableProdMode()
 }
-
-bootstrapApplication(AppComponent, {
-  providers: [
-    importProvidersFrom(
-      MomentModule, 
-      BrowserModule, 
-      AppRoutingModule,  
-      TranslateModule.forRoot({
-        loader: {
-          provide: TranslateLoader,
-          useFactory: HttpLoaderFactory,
-          deps: [HttpClient]
-        }
-      })
-    ),
-    provideHttpClient(withInterceptors([AuthorizeInterceptor])),
-    provideAnimations(),
-    provideRouter([
-      {
-        path: '',
-        component: DashboardComponent
-      },
-      {
-        path: 'login',
-        component: LoginComponent
+const providers = [
+  AuthGuard,
+  importProvidersFrom(MomentModule),
+  provideAnimations(),
+  provideRouter(routes),
+  importProvidersFrom(
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
       }
-    ])
-
-  ]
-}).catch((err) => {
-  console.error(err)
+    })
+  )
+]
+if (environment.useOAuth) {
+  providers.push(
+    provideHttpClient(withInterceptors([errorHandlingInterceptor]), withInterceptorsFromDi()),
+    provideOAuthClient(
+      {
+        resourceServer: {
+          allowedUrls: [environment.mpsServer],
+          sendAccessToken: true
+        }
+      },
+      JwksValidationHandler
+    ),
+    provideAppInitializer(() => {
+      const oauthService = inject(OAuthService)
+      oauthService.configure(environment.auth)
+      return oauthService.loadDiscoveryDocumentAndTryLogin()
+    })
+  )
+} else {
+  providers.push(provideHttpClient(withInterceptors([authorizationInterceptor, errorHandlingInterceptor])))
+}
+bootstrapApplication(AppComponent, {
+  providers
 })
+  .then(() => {})
+  .catch((err) => {
+    console.error(err)
+  })

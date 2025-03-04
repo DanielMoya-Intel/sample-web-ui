@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Router } from '@angular/router'
 import { DevicesService } from '../devices.service'
-import { MonacoEditorModule } from 'ngx-monaco-editor-v2'
+import { MonacoEditorModule, NGX_MONACO_EDITOR_CONFIG } from 'ngx-monaco-editor-v2'
 import { FormsModule, FormControl, ReactiveFormsModule } from '@angular/forms'
 import { MatCardModule } from '@angular/material/card'
 import { MatSelectModule } from '@angular/material/select'
@@ -22,7 +22,6 @@ import SnackbarDefaults from 'src/app/shared/config/snackBarDefault'
 
 @Component({
   selector: 'app-explorer',
-  standalone: true,
   imports: [
     MonacoEditorModule,
     FormsModule,
@@ -36,10 +35,23 @@ import SnackbarDefaults from 'src/app/shared/config/snackBarDefault'
     FormsModule,
     AsyncPipe
   ],
+  providers: [
+    {
+      provide: NGX_MONACO_EDITOR_CONFIG,
+      useValue: {
+        onMonacoLoad: () => {}
+      }
+    }
+  ],
   templateUrl: './explorer.component.html',
   styleUrl: './explorer.component.scss'
 })
 export class ExplorerComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  dialog = inject(MatDialog)
+  readonly router = inject(Router)
+  private readonly devicesService = inject(DevicesService)
+
   @Input()
   public deviceId = ''
 
@@ -49,12 +61,6 @@ export class ExplorerComponent implements OnInit {
   wsmanOperations: string[] = []
   selectedWsmanOperation = ''
   filteredOptions!: Observable<string[]>
-  constructor(
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    public readonly router: Router,
-    private readonly devicesService: DevicesService
-  ) {}
 
   ngOnInit(): void {
     this.devicesService.getWsmanOperations().subscribe((data) => {

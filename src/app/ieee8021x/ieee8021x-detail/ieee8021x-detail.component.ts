@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import {
   AbstractControl,
   FormBuilder,
@@ -39,7 +39,6 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
   selector: 'app-ieee8021x-detail',
   templateUrl: './ieee8021x-detail.component.html',
   styleUrls: ['./ieee8021x-detail.component.scss'],
-  standalone: true,
   imports: [
     MatToolbar,
     MatProgressBar,
@@ -64,6 +63,12 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core'
   ]
 })
 export class IEEE8021xDetailComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  fb = inject(FormBuilder)
+  private readonly activeRoute = inject(ActivatedRoute)
+  router = inject(Router)
+  ieee8021xService = inject(IEEE8021xService)
+
   ieee8021xForm: FormGroup
   pageTitle: string
   isLoading = false
@@ -76,20 +81,18 @@ export class IEEE8021xDetailComponent implements OnInit {
   pxeTimeoutDefault = 60 * 2 // two mninutes
 
   constructor(
-    public snackBar: MatSnackBar,
-    public fb: FormBuilder,
-    private readonly activeRoute: ActivatedRoute,
-    public router: Router,
-    public ieee8021xService: IEEE8021xService,
     public translate: TranslateService
   ) {
+    const fb = this.fb
+
     this.ieee8021xForm = fb.group({
       profileName: [
         null,
         [
           Validators.required,
           Validators.maxLength(this.profileNameMaxLen),
-          Validators.pattern('[a-zA-Z0-9]*')]
+          Validators.pattern('[a-zA-Z0-9]*')
+        ]
       ],
       authenticationProtocol: [
         null,
@@ -100,7 +103,8 @@ export class IEEE8021xDetailComponent implements OnInit {
         [
           Validators.required,
           Validators.min(this.pxeTimeoutMin),
-          Validators.max(this.pxeTimeoutMax)]
+          Validators.max(this.pxeTimeoutMax)
+        ]
       ],
       wiredInterface: [
         null,

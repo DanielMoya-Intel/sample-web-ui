@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, inject } from '@angular/core'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { throwError } from 'rxjs'
 import { catchError, finalize } from 'rxjs/operators'
@@ -24,7 +24,6 @@ import { TranslateModule } from '@ngx-translate/core'
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  standalone: true,
   imports: [
     MatProgressBar,
     MatCard,
@@ -37,13 +36,12 @@ import { TranslateModule } from '@ngx-translate/core'
   ]
 })
 export class DashboardComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  private readonly devicesService = inject(DevicesService)
+
   public isLoading = true
   public stats?: DeviceStats
   public cloudMode = environment.cloud
-  constructor(
-    public snackBar: MatSnackBar,
-    private readonly devicesService: DevicesService
-  ) {}
 
   ngOnInit(): void {
     this.isLoading = true

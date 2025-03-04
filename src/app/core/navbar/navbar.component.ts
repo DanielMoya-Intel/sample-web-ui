@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 import { environment } from 'src/environments/environment'
 import { MatIcon } from '@angular/material/icon'
 import { RouterLink, RouterLinkActive } from '@angular/router'
@@ -16,7 +16,6 @@ import { TranslateModule } from '@ngx-translate/core'
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  standalone: true,
   imports: [
     MatNavList,
     MatDivider,

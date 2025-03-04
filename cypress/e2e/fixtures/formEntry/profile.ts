@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { ActivationModes, TlsModes, UserConsentModes } from '../../../../src/app/profiles/profiles.constants'
+import { ActivationModes, TlsModes } from '../../../../src/app/profiles/profiles.constants'
 import { wirelessFixtures } from './wireless'
 import { ciraConfig } from '../api/cira'
 
@@ -12,7 +12,6 @@ const dhcpEnabledValues = [true, false]
 const wifiConfigs = [
   [{}], // support non wifi config
   [wirelessFixtures.happyPath]
-
 ]
 
 const amtProfiles: any[] = []
@@ -116,7 +115,7 @@ const profileFixtures = {
     amtPassword: 'P@ssw0rd',
     mebxPassword: 'P@ssw0rd',
     dhcpEnabled: true,
-    connectionMode: 'TLS (Enterprise)',
+    connectionMode: 'TLS',
     tlsConfig: 'Server Authentication Only',
     generateRandomPassword: false,
     userConsent: 'All',

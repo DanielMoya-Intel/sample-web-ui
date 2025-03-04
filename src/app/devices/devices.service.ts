@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { HttpClient } from '@angular/common/http'
-import { EventEmitter, Injectable } from '@angular/core'
+import { EventEmitter, Injectable, inject } from '@angular/core'
 import { Observable, Subject } from 'rxjs'
 import { catchError, map } from 'rxjs/operators'
 import { environment } from 'src/environments/environment'
@@ -14,7 +14,6 @@ import {
   Device,
   DataWithCount,
   DeviceStats,
-  EventLog,
   HardwareInformation,
   PageEventOptions,
   PowerState,
@@ -24,7 +23,10 @@ import {
   AMTFeaturesRequest,
   DiskInformation,
   IPSAlarmClockOccurrenceInput,
-  IPSAlarmClockOccurrence
+  IPSAlarmClockOccurrence,
+  Certificates,
+  NetworkConfig,
+  TLSSettings
 } from 'src/models/models'
 import { caseInsensitiveCompare } from '../../utils'
 
@@ -32,6 +34,8 @@ import { caseInsensitiveCompare } from '../../utils'
   providedIn: 'root'
 })
 export class DevicesService {
+  private readonly http = inject(HttpClient)
+
   public TargetOSMap = {
     0: 'Unknown',
     1: 'Other',
@@ -208,8 +212,6 @@ export class DevicesService {
   connectKVMSocket: EventEmitter<boolean> = new EventEmitter<boolean>(false)
   deviceState: EventEmitter<number> = new EventEmitter<number>()
 
-  constructor(private readonly http: HttpClient) {}
-
   getGeneralSettings(deviceId: string): Observable<any> {
     return this.http.get<AuditLogResponse>(`${environment.mpsServer}/api/v1/amt/generalSettings/${deviceId}`).pipe(
       catchError((err) => {
@@ -220,24 +222,6 @@ export class DevicesService {
 
   getAMTVersion(deviceId: string): Observable<any> {
     return this.http.get<AuditLogResponse>(`${environment.mpsServer}/api/v1/amt/version/${deviceId}`).pipe(
-      catchError((err) => {
-        throw err
-      })
-    )
-  }
-
-  getAuditLog(deviceId: string, startIndex = 0): Observable<AuditLogResponse> {
-    return this.http
-      .get<AuditLogResponse>(`${environment.mpsServer}/api/v1/amt/log/audit/${deviceId}?startIndex=${startIndex}`)
-      .pipe(
-        catchError((err) => {
-          throw err
-        })
-      )
-  }
-
-  getEventLog(deviceId: string): Observable<EventLog[]> {
-    return this.http.get<EventLog[]>(`${environment.mpsServer}/api/v1/amt/log/event/${deviceId}`).pipe(
       catchError((err) => {
         throw err
       })
@@ -490,7 +474,7 @@ export class DevicesService {
     )
   }
 
-  getCertificates(guid: string): Observable<any> {
+  getCertificates(guid: string): Observable<Certificates> {
     return this.http.get<any>(`${environment.mpsServer}/api/v1/amt/certificates/${guid}`).pipe(
       catchError((err) => {
         throw err
@@ -498,14 +482,14 @@ export class DevicesService {
     )
   }
 
-  getNetworkSettings(guid: string): Observable<any> {
+  getNetworkSettings(guid: string): Observable<NetworkConfig> {
     return this.http.get<any>(`${environment.mpsServer}/api/v1/amt/networkSettings/${guid}`).pipe(
       catchError((err) => {
         throw err
       })
     )
   }
-  getTLSSettings(guid: string): Observable<any> {
+  getTLSSettings(guid: string): Observable<TLSSettings[]> {
     return this.http.get<any>(`${environment.mpsServer}/api/v1/amt/tls/${guid}`).pipe(
       catchError((err) => {
         throw err

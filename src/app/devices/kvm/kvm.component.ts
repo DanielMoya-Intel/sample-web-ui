@@ -3,7 +3,18 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, EventEmitter, HostListener, Input, OnDestroy, OnInit, Output } from '@angular/core'
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  inject,
+  signal
+} from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { ActivatedRoute, NavigationStart, Router } from '@angular/router'
@@ -24,16 +35,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms'
 import { MatSelect } from '@angular/material/select'
 import { MatFormField, MatLabel } from '@angular/material/form-field'
 import { MatToolbar } from '@angular/material/toolbar'
-import { DeviceToolbarComponent } from '../device-toolbar/device-toolbar.component'
 import { UserConsentService } from '../user-consent.service'
 
 @Component({
   selector: 'app-kvm',
   templateUrl: './kvm.component.html',
   styleUrls: ['./kvm.component.scss'],
-  standalone: true,
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   imports: [
-    DeviceToolbarComponent,
     MatToolbar,
     MatFormField,
     MatLabel,
@@ -49,6 +58,13 @@ import { UserConsentService } from '../user-consent.service'
   ]
 })
 export class KvmComponent implements OnInit, OnDestroy {
+  snackBar = inject(MatSnackBar)
+  dialog = inject(MatDialog)
+  private readonly devicesService = inject(DevicesService)
+  readonly activatedRoute = inject(ActivatedRoute)
+  private readonly userConsentService = inject(UserConsentService)
+  readonly router = inject(Router)
+
   @Input()
   public deviceId = ''
 
@@ -61,6 +77,7 @@ export class KvmComponent implements OnInit, OnDestroy {
   @Output()
   selectedEncoding: EventEmitter<number> = new EventEmitter<number>()
 
+  isFullscreen = signal(false)
   deviceState = -1
   results: any
   isLoading = false
@@ -85,14 +102,7 @@ export class KvmComponent implements OnInit, OnDestroy {
     { value: 2, viewValue: 'RLE 16' }
   ]
 
-  constructor(
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    private readonly devicesService: DevicesService,
-    public readonly activatedRoute: ActivatedRoute,
-    private readonly userConsentService: UserConsentService,
-    public readonly router: Router
-  ) {
+  constructor() {
     if (environment.mpsServer.includes('/mps')) {
       // handles kong route
       this.mpsServer = `${environment.mpsServer.replace('http', 'ws')}/ws/relay`
@@ -121,13 +131,13 @@ export class KvmComponent implements OnInit, OnDestroy {
       .subscribe()
 
     // used for receiving messages from the kvm connect button on the toolbar
-    this.startSocketSubscription = this.devicesService.connectKVMSocket.subscribe((data: boolean) => {
+    this.startSocketSubscription = this.devicesService.connectKVMSocket.subscribe(() => {
       this.init()
       this.deviceKVMConnection.emit(true)
     })
 
     // used for receiving messages from the kvm disconnect button on the toolbar
-    this.stopSocketSubscription = this.devicesService.stopwebSocket.subscribe((data: boolean) => {
+    this.stopSocketSubscription = this.devicesService.stopwebSocket.subscribe(() => {
       this.isDisconnecting = true
       this.deviceKVMConnection.emit(false)
     })
@@ -173,13 +183,31 @@ export class KvmComponent implements OnInit, OnDestroy {
 
   postUserConsentDecision(result: boolean): Observable<any> {
     if (result != null && result) {
-      this.readyToLoadKvm = true
+      this.readyToLoadKvm = this.amtFeatures?.kvmAvailable ?? false
       this.getAMTFeatures()
     } else if (result === false) {
       this.isLoading = false
       this.deviceState = 0
     }
     return of(null)
+  }
+
+  @HostListener('document:fullscreenchange', ['$event'])
+  @HostListener('document:webkitfullscreenchange', ['$event'])
+  @HostListener('document:mozfullscreenchange', ['$event'])
+  @HostListener('document:MSFullscreenChange', ['$event'])
+  exitFullscreen(): void {
+    if (
+      !document.fullscreenElement &&
+      !(document as any).webkitIsFullScreen &&
+      !(document as any).mozFullScreen &&
+      !(document as any).msFullscreenElement
+    ) {
+      this.toggleFullscreen()
+    }
+  }
+  toggleFullscreen(): void {
+    this.isFullscreen.set(!this.isFullscreen())
   }
 
   connect(): void {
@@ -232,7 +260,7 @@ export class KvmComponent implements OnInit, OnDestroy {
 
   handleRedirectionStatus(redirectionStatus: RedirectionStatus): Observable<any> {
     this.redirectionStatus = redirectionStatus
-    if (this.redirectionStatus.isKVMConnected) {
+    if (this.amtFeatures?.kvmAvailable && this.redirectionStatus.isKVMConnected) {
       this.displayError($localize`KVM cannot be accessed - another kvm session is in progress`)
       return of(null)
     }
@@ -251,6 +279,11 @@ export class KvmComponent implements OnInit, OnDestroy {
 
   handleAMTFeaturesResponse(results: AMTFeaturesResponse): Observable<any> {
     this.amtFeatures = results
+
+    if (!this.amtFeatures.kvmAvailable) {
+      return of(true)
+    }
+
     if (this.amtFeatures.KVM) {
       return of(true)
     }
@@ -343,8 +376,10 @@ export class KvmComponent implements OnInit, OnDestroy {
   deviceIDERStatus = (event: any): void => {
     if (event === 0) {
       this.isIDERActive = false
+      this.displayWarning('IDER session ended')
     } else if (event === 3) {
       this.isIDERActive = true
+      this.displayWarning('IDER session active')
     }
   }
 

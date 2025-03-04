@@ -15,7 +15,6 @@ describe('UserConsentService', () => {
   let snackBar: jasmine.SpyObj<MatSnackBar>
   let reqUserConsentCodeSpy: jasmine.Spy
   let cancelUserConsentCodeSpy: jasmine.Spy
-  let optInCodeResponseSpy: jasmine.Spy
   let userConsentResponse: UserConsentResponse
   let userConsentData: UserConsentData
   let displayErrorSpy: jasmine.Spy
@@ -53,6 +52,7 @@ describe('UserConsentService', () => {
     expect(service).toBeTruthy()
   })
   it('should handle user consent response correctly', (done) => {
+    environment.cloud = true
     const mockDialogData: UserConsentData = {
       deviceId: 'test-guid',
       results: userConsentResponse
@@ -68,6 +68,7 @@ describe('UserConsentService', () => {
     service.handleUserConsentDecision(false, '111', {
       userConsent: 'all',
       redirection: true,
+      kvmAvailable: true,
       KVM: true,
       SOL: true,
       IDER: true,

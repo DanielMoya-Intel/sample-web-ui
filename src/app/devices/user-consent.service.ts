@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core'
+import { Injectable, inject } from '@angular/core'
 import { Observable, of } from 'rxjs'
-import { catchError, finalize, switchMap } from 'rxjs/operators'
+import { catchError, switchMap } from 'rxjs/operators'
 import { environment } from 'src/environments/environment'
 import SnackbarDefaults from '../shared/config/snackBarDefault'
 import { DeviceUserConsentComponent } from './device-user-consent/device-user-consent.component'
@@ -13,11 +13,9 @@ import { DevicesService } from './devices.service'
   providedIn: 'root'
 })
 export class UserConsentService {
-  constructor(
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private readonly devicesService: DevicesService
-  ) {}
+  private dialog = inject(MatDialog)
+  private snackBar = inject(MatSnackBar)
+  private readonly devicesService = inject(DevicesService)
 
   handleUserConsentDecision(
     result: boolean | null,
@@ -121,7 +119,6 @@ export class UserConsentService {
         response.Header.Action.length
       )
     } else {
-      console.log('getUserConsentMethod - default return', response)
       return (response as any).XMLName.Local
     }
   }
@@ -135,7 +132,6 @@ export class UserConsentService {
   }
 
   sendOptInCodeResponse(result: UserConsentResponse, featureName: string): boolean {
-    console.log('sendOptInCodeResponse ', result)
     if (result.Body?.ReturnValue === 0) {
       return true
     } else if (result.Body?.ReturnValue === 2066) {

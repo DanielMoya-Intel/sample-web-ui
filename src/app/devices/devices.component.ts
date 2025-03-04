@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { SelectionModel } from '@angular/cdk/collections'
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, OnInit, ViewChild, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatPaginator, PageEvent } from '@angular/material/paginator'
 import { MatSelectChange, MatSelect } from '@angular/material/select'
@@ -53,7 +53,6 @@ import { TranslateModule } from '@ngx-translate/core'
   selector: 'app-devices',
   templateUrl: './devices.component.html',
   styleUrls: ['./devices.component.scss'],
-  standalone: true,
   imports: [
     MatInput,
     MatToolbar,
@@ -92,6 +91,11 @@ import { TranslateModule } from '@ngx-translate/core'
   ]
 })
 export class DevicesComponent implements OnInit, AfterViewInit {
+  snackBar = inject(MatSnackBar)
+  dialog = inject(MatDialog)
+  readonly router = inject(Router)
+  private readonly devicesService = inject(DevicesService)
+
   public devices: MatTableDataSource<Device> = new MatTableDataSource<Device>()
 
   public totalCount = 0
@@ -123,12 +127,7 @@ export class DevicesComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator
   @ViewChild(MatSort) sort!: MatSort
 
-  constructor(
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    public readonly router: Router,
-    private readonly devicesService: DevicesService
-  ) {
+  constructor() {
     this.selectedDevices = new SelectionModel<Device>(true, [])
     this.powerStates = this.devicesService.PowerStates
     if (!this.isCloudMode) {
@@ -416,7 +415,6 @@ export class DevicesComponent implements OnInit, AfterViewInit {
     const dialogRef = this.dialog.open(AreYouSureDialogComponent)
     dialogRef.afterClosed().subscribe((result) => {
       if (result === true) {
-        const requests: Observable<any>[] = []
         this.isLoading = true
         from(this.selectedDevices.selected)
           .pipe(

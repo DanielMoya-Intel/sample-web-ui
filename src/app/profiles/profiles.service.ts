@@ -4,7 +4,7 @@
  **********************************************************************/
 
 import { HttpClient } from '@angular/common/http'
-import { Injectable } from '@angular/core'
+import { Injectable, inject } from '@angular/core'
 import { Observable, throwError } from 'rxjs'
 import { catchError } from 'rxjs/operators'
 import { environment } from 'src/environments/environment'
@@ -16,11 +16,10 @@ import { Profile } from './profiles.constants'
   providedIn: 'root'
 })
 export class ProfilesService {
+  private readonly authService = inject(AuthService)
+  private readonly http = inject(HttpClient)
+
   private readonly url = `${environment.rpsServer}/api/v1/admin/profiles`
-  constructor(
-    private readonly authService: AuthService,
-    private readonly http: HttpClient
-  ) {}
 
   getData(pageEvent?: PageEventOptions): Observable<DataWithCount<Profile>> {
     let query = this.url
@@ -73,12 +72,14 @@ export class ProfilesService {
     )
   }
 
-  export(name: string): Observable<any> {
-    return this.http.get(`${this.url}/export/${encodeURIComponent(name)}`).pipe(
-      catchError((err) => {
-        const errorMessages = this.authService.onError(err)
-        return throwError(errorMessages)
-      })
-    )
+  export(name: string, domainName: string): Observable<any> {
+    return this.http
+      .get(`${this.url}/export/${encodeURIComponent(name)}?domainName=${encodeURIComponent(domainName)}`)
+      .pipe(
+        catchError((err) => {
+          const errorMessages = this.authService.onError(err)
+          return throwError(errorMessages)
+        })
+      )
   }
 }

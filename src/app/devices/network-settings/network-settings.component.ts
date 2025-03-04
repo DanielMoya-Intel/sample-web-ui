@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Component, Input, OnInit, inject } from '@angular/core'
 import { DevicesService } from '../devices.service'
 import { MatCardModule } from '@angular/material/card'
 import { catchError, finalize, throwError } from 'rxjs'
@@ -8,10 +8,10 @@ import { MatListModule } from '@angular/material/list'
 import { MatIcon } from '@angular/material/icon'
 import { MatDivider } from '@angular/material/divider'
 import { MatProgressBarModule } from '@angular/material/progress-bar'
+import { NetworkConfig } from 'src/models/models'
 
 @Component({
   selector: 'app-network-settings',
-  standalone: true,
   imports: [
     MatCardModule,
     MatListModule,
@@ -23,15 +23,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'
   styleUrl: './network-settings.component.scss'
 })
 export class NetworkSettingsComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  devicesService = inject(DevicesService)
+
   @Input()
   public deviceId = ''
   isLoading = true
-  public networkResults?: any
-
-  constructor(
-    public snackBar: MatSnackBar,
-    public devicesService: DevicesService
-  ) {}
+  public networkResults?: NetworkConfig
   ngOnInit(): void {
     this.devicesService
       .getNetworkSettings(this.deviceId)

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  **********************************************************************/
 
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, ViewChild, inject } from '@angular/core'
 import { MatDialog } from '@angular/material/dialog'
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Router } from '@angular/router'
@@ -35,12 +35,12 @@ import { ToolkitPipe } from '../shared/pipes/toolkit.pipe'
 import { environment } from 'src/environments/environment'
 import { KeyDisplayDialogComponent } from './key-display-dialog/key-display-dialog.component'
 import { TranslateModule } from '@ngx-translate/core'
+import { ExportDialogComponent } from './export-dialog/export-dialog.component'
 
 @Component({
   selector: 'app-profiles',
   templateUrl: './profiles.component.html',
   styleUrls: ['./profiles.component.scss'],
-  standalone: true,
   imports: [
     ToolkitPipe,
     MatToolbar,
@@ -65,6 +65,11 @@ import { TranslateModule } from '@ngx-translate/core'
   ]
 })
 export class ProfilesComponent implements OnInit {
+  snackBar = inject(MatSnackBar)
+  dialog = inject(MatDialog)
+  readonly router = inject(Router)
+  private readonly profilesService = inject(ProfilesService)
+
   profiles: Profile[] = []
   isLoading = true
   totalCount = 0
@@ -84,13 +89,6 @@ export class ProfilesComponent implements OnInit {
   cloudMode = environment.cloud
 
   @ViewChild(MatPaginator) paginator!: MatPaginator
-
-  constructor(
-    public snackBar: MatSnackBar,
-    public dialog: MatDialog,
-    public readonly router: Router,
-    private readonly profilesService: ProfilesService
-  ) {}
 
   ngOnInit(): void {
     this.getData(this.pageEvent)
@@ -120,7 +118,30 @@ export class ProfilesComponent implements OnInit {
   }
 
   export(name: string): void {
-    this.profilesService.export(name).subscribe({
+    const profile = this.profiles.find((p) => p.profileName === name)
+    if (!profile) {
+      this.snackBar.open($localize`Unable to export profile`, undefined, SnackbarDefaults.defaultError)
+      return
+    }
+
+    if (profile.activation === 'acmactivate') {
+      const dialogRef = this.dialog.open(ExportDialogComponent, {
+        width: '400px',
+        disableClose: false
+      })
+
+      dialogRef.afterClosed().subscribe((selectedDomain) => {
+        if (selectedDomain) {
+          this.exportProfile(name, selectedDomain !== 'none' ? selectedDomain : '')
+        }
+      })
+    } else {
+      this.exportProfile(name, '')
+    }
+  }
+
+  private exportProfile(name: string, domain: string): void {
+    this.profilesService.export(name, domain).subscribe({
       next: (data) => {
         // prompt to download data
         const blob = new Blob([data.content], { type: 'application/x-yaml' })
