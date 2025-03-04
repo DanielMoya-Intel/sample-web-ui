@@ -28,6 +28,7 @@ import {
   MatCardActions,
   MatCardFooter
 } from '@angular/material/card'
+import { TranslateModule } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-login',
@@ -53,7 +54,8 @@ import {
     MatChipOption,
     MatCardActions,
     MatButton,
-    MatCardFooter
+    MatCardFooter,
+    TranslateModule
   ]
 })
 export class LoginComponent {

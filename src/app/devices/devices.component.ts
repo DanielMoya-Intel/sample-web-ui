@@ -47,6 +47,7 @@ import { MatButton, MatIconButton } from '@angular/material/button'
 import { MatToolbar } from '@angular/material/toolbar'
 import { MatSort } from '@angular/material/sort'
 import { MatInput } from '@angular/material/input'
+import { TranslateModule } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-devices',
@@ -86,7 +87,8 @@ import { MatInput } from '@angular/material/input'
     MatRow,
     MatPaginator,
     MatHint,
-    RouterModule
+    RouterModule,
+    TranslateModule
   ]
 })
 export class DevicesComponent implements OnInit, AfterViewInit {

@@ -1,11 +1,19 @@
 {
-    "toolbar.header.cloudModeTitle": {
-      "value": "Open AMT Cloud Toolkit Sample UI",
-      "description": "Main title of the application"
-    },
-    "toolbar.header.consoleModeTitle": {
-      "value": "Console",
-      "description": "Main title of the application in console mode"
+  "toolbar.header.cloudModeTitle": {
+    "value": "Open AMT Cloud Toolkit Sample UI",
+    "description": "Main title of the application"
+  },
+  "toolbar.header.consoleModeTitle": {
+    "value": "Console",
+    "description": "Main title of the application in console mode"
+  },
+  "login.header.loginTitle": {
+    "value": "Login",
+    "description": "Login page title"
+  },
+    "dashboard.header.dashboardTitle": {
+      "value": "Dashboard",
+      "description": "Dashboard title"
     },
     "dashboard.totalDevices": {
       "value": "Total Devices",
@@ -155,6 +163,70 @@
       "value": "Expiration Date",
       "description": "Expiration Date column header"
     },
+    "domains.header.domainsNewTitle": {
+      "value": "New Domain",
+      "description": "New Domain page title"
+    },
+    "devices.headerd.devicesTitle": {
+      "value": "Devices",
+      "description": "Devices page title"
+    },
+    "devices.emptyBody": {
+      "value": "No Devices",
+      "description": "No Devices message"
+    },
+    "devices.emptyBodyFilter": {
+      "value": "No Devices Match Filter Selection",
+      "description": "No Devices filtered message"
+    },
+    "devices.table.hostname": {
+      "value": "Hostname (Friendly Name)",
+      "description": "Hostname (Friendly Name) column header"
+    },
+    "devices.table.guid": {
+      "value": "GUID",
+      "description": "GUID column header"
+    },
+    "devices.table.status": {
+      "value": "Status",
+      "description": "Status column header"
+    },
+    "devices.table.actions": {
+      "value": "Actions",
+      "description": "Actions column header"
+    },
+    "ieee8021x.headerd.ieeeTitle": {
+      "value": "IEEE 802.1x",
+      "description": "IEEE 802.1x page title"
+    },
+    "ieee8021xConfigs.headerd.ieeeTitle": {
+      "value": "IEEE8021x Configs",
+      "description": "IEEE8021x Configs page title"
+    },
+    "ieee8021xConfigs.emptyBody": {
+      "value": "No IEEE 8021x Configs",
+      "description": "No IEEE 8021x Configs message"
+    },
+    "ieee8021xConfigs.table.profileName": {
+      "value": "Name",
+      "description": "Name column header"
+    },
+    "ieee8021xConfigs.table.authenticationProtocol": {
+      "value": "Authentication Protocol",
+      "description": "Authentication Protocol column header"
+    },
+    "ieee8021xConfigs.table.interface": {
+      "value": "Interface",
+      "description": "Interface column header"
+    },
+    "ieee8021xConfigs.header.ieee8021NewTitle": {
+      "value": "New IEEE8021x Config",
+      "description": "New IEEE8021x Config page title"
+    },
+    "wireless.header.wirelessTitle": {
+      "value": "Wireless",
+      "description": "Wireless page title"
+    },
     "wirelessConfigs.title": {
       "value": "Wireless Configs",
       "description": "Title for the wireless configurations section"
@@ -246,6 +318,10 @@
     "wirelessDetail.profileCreatedSuccessfully": {
       "value": "Profile created successfully",
       "description": "Success message for creating wireless profile"
+    },
+    "common.addNew": {
+      "value": "Add New",
+      "description": "Text for the add new button"
     }
 
 
