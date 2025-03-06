@@ -231,10 +231,6 @@
     "value": "Wireless",
     "description": "Wireless page title"
   },
-  "wirelessConfigs.addNew": {
-    "value": "Add New",
-    "description": "Button text for adding a new wireless configuration"
-  },
   "wirelessConfigs.authentication": {
     "value": "Authentication",
     "description": "Column header for the authentication method of the wireless configuration"
