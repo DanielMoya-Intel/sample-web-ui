@@ -17,6 +17,14 @@ import { AuthGuard } from './app/shared/auth-guard.service'
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks'
 import { errorHandlingInterceptor } from './app/error-handling.interceptor'
 import { authorizationInterceptor } from './app/authorize.interceptor'
+import { TranslateLoader, TranslateModule, TranslateService } from '@ngx-translate/core'
+import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { HttpClient } from '@angular/common/http'
+import { firstValueFrom } from 'rxjs'
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json')
+}
 
 if (environment.production) {
   enableProdMode()
@@ -25,7 +33,20 @@ const providers = [
   AuthGuard,
   importProvidersFrom(MomentModule),
   provideAnimations(),
-  provideRouter(routes)
+  provideRouter(routes),
+  importProvidersFrom(
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
+  ),
+  provideAppInitializer(() => {
+    inject(TranslateService).setDefaultLang('en')
+    return firstValueFrom(inject(TranslateService).use('en'))
+  })
 ]
 if (environment.useOAuth) {
   providers.push(
