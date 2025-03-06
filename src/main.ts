@@ -17,6 +17,13 @@ import { AuthGuard } from './app/shared/auth-guard.service'
 import { JwksValidationHandler } from 'angular-oauth2-oidc-jwks'
 import { errorHandlingInterceptor } from './app/error-handling.interceptor'
 import { authorizationInterceptor } from './app/authorize.interceptor'
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
+import { TranslateHttpLoader } from '@ngx-translate/http-loader'
+import { HttpClient } from '@angular/common/http'
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json')
+}
 
 if (environment.production) {
   enableProdMode()
@@ -25,7 +32,16 @@ const providers = [
   AuthGuard,
   importProvidersFrom(MomentModule),
   provideAnimations(),
-  provideRouter(routes)
+  provideRouter(routes),
+  importProvidersFrom(
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
+  )
 ]
 if (environment.useOAuth) {
   providers.push(

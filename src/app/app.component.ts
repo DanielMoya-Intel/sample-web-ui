@@ -9,6 +9,7 @@ import { AuthService } from './auth.service'
 import { ToolbarComponent } from './core/toolbar/toolbar.component'
 import { NavbarComponent } from './core/navbar/navbar.component'
 import { MatSidenavModule } from '@angular/material/sidenav'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-root',
@@ -26,6 +27,11 @@ export class AppComponent implements OnInit {
   authService = inject(AuthService)
 
   isLoggedIn = false
+
+  constructor(private translate: TranslateService) {
+    this.translate.setDefaultLang('en')
+    this.translate.use('en')
+  }
 
   ngOnInit(): void {
     this.authService.loggedInSubject$.subscribe((value: any) => {
